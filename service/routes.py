@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 import staticVariable
 import zipfile
+import urllib
 import os
 
 UPLOAD_FOLDER = staticVariable.UPLOAD_FOLDER
@@ -34,6 +35,33 @@ def add_routes(app=None):
 
         return file_arr
 
+    def saveImage(req_file):
+        fileName = req_file.filename
+
+        if req_file and allowed_file(fileName):
+            folder, ext = fileName.split('.')
+            if ext == 'zip':
+                req_file.save(os.path.join(UPLOAD_FOLDER, fileName))
+                unzip_file(req_file)
+                files = list_files(UPLOAD_FOLDER, req_file)
+                link_arr = []
+                base_url = request.base_url
+
+                for dir_file in files:
+                    link = '/'.join([base_url, upload_link, folder, dir_file])
+                    link_arr.append(link)
+
+                os.remove(UPLOAD_FOLDER + '/' + fileName)
+                return jsonify({'links': link_arr})
+
+            else:
+                req_file.save(os.path.join(UPLOAD_FOLDER, fileName))
+                link = '/'.join([request.base_url, upload_link, fileName])
+                return jsonify({'link': link})
+
+        else:
+            return jsonify({'response': message_invalid})
+
     @service.route('/service', methods=['GET','POST'])
     def service_index():
         # checks if the upload directory is available
@@ -43,37 +71,27 @@ def add_routes(app=None):
             return jsonify({'response': message_root})
 
         if request.method == 'POST':
-            req_file = request.files['image']
-            fileName = req_file.filename
 
-            if req_file and allowed_file(fileName):
-                folder, ext = fileName.split('.')
-                if ext == 'zip':
-                    req_file.save(os.path.join(UPLOAD_FOLDER, fileName))
-                    unzip_file(req_file)
-                    files = list_files(UPLOAD_FOLDER, req_file)
-                    link_arr = []
-                    base_url = request.base_url
-
-                    for dir_file in files:
-                        link_arr.append(base_url
-                                        + upload_link
-                                        + folder + '/'
-                                        + dir_file)
-
-                    os.remove(UPLOAD_FOLDER + '/' + fileName)
-
-                    return jsonify({'links': link_arr})
-
-                else:
-                    req_file.save(os.path.join(UPLOAD_FOLDER, fileName))
-
-                    return jsonify({'link': request.base_url
-                                            + upload_link
-                                            + fileName })
-
+            if request.files:
+                req_file = request.files['image']
+                return saveImage(req_file)
             else:
-                return jsonify({'response': message_invalid})
+                image_url = request.args['image']
+                imageNewName = request.args['name']
 
+                url_arr = image_url.split('/')
+                if allowed_file(url_arr[len(url_arr) - 1]):
+                    ext_name = url_arr[len(url_arr) - 1].split('.')[1]
+
+                    imageNewName = '.'.join([imageNewName, ext_name])
+                    image_dir = '/'.join([UPLOAD_FOLDER, imageNewName])
+
+                    urllib.urlretrieve(image_url, image_dir)
+
+                    link = '/'.join([request.base_url, upload_link, imageNewName])
+
+                    return jsonify({'link': link})
+                else:
+                    return jsonify({'response': message_invalid})
 
     app.register_blueprint(service)

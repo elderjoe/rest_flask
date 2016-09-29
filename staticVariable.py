@@ -9,7 +9,7 @@ MESSAGE_ROOT = {'message': 'Please upload image or zip file containing images'}
 MESSAGE_INVALID = {'message': 'Not a valid file'}
 UPLOAD_ROOT = {'message': 'Wrong URL. use /service/uploads/<imagename.ext> or /service/uploads/<foldername>/<imagename.ext>'}
 
-LINK = '/uploads/'
+LINK = 'uploads'
 FOLDER_NAME = '/upload'
 
 # checks and creates the folder 'upload' if not found

@@ -1,14 +1,20 @@
+from __future__ import unicode_literals
+
 from flask import Blueprint, jsonify, request
 import staticVariable
+from youtube_dl import YoutubeDL
 import zipfile
 import urllib
 import os
 
 UPLOAD_FOLDER = staticVariable.UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = staticVariable.ALLOWED_EXTENSIONS
+AUDIO_FOLDER = staticVariable.AUDIO_FOLDER
 message_root = staticVariable.MESSAGE_ROOT
 message_invalid = staticVariable.MESSAGE_INVALID
 upload_link = staticVariable.LINK
+audio_link = staticVariable.AUDIO_LINK
+ydl_opts = staticVariable.YDL_OPTS
 
 def add_routes(app=None):
     service = Blueprint('service', __name__)
@@ -28,8 +34,8 @@ def add_routes(app=None):
                 if fileName.split('.')[1] in ALLOWED_EXTENSIONS:
                     file_arr.append(fileName)
                 else:
-                    # deletes all not included in the ALLOWED_EXTENSIONS list
                     os.remove(UPLOAD_FOLDER + '/' + zipName + '/' + fileName)
+
         except Exception:
             pass
 
@@ -62,9 +68,25 @@ def add_routes(app=None):
         else:
             return jsonify({'response': message_invalid})
 
+    def upload_image_from_url(image_url, imageNewName):
+        url_arr = image_url.split('/')
+        if allowed_file(url_arr[len(url_arr) - 1]):
+            ext_name = url_arr[len(url_arr) - 1].split('.')[1]
+
+            imageNewName = '.'.join([imageNewName, ext_name])
+            image_dir = '/'.join([UPLOAD_FOLDER, imageNewName])
+
+            urllib.urlretrieve(image_url, image_dir)
+
+            link = '/'.join([request.base_url, upload_link, imageNewName])
+
+            return jsonify({'link': link})
+        else:
+            return jsonify({'response': message_invalid})
+
     @service.route('/service', methods=['GET','POST'])
     def service_index():
-        # checks if the upload directory is available
+
         staticVariable.check_upload_directory()
 
         if request.method == 'GET':
@@ -73,25 +95,28 @@ def add_routes(app=None):
         if request.method == 'POST':
 
             if request.files:
-                req_file = request.files['image']
+                req_file = request.files['file']
                 return saveImage(req_file)
-            else:
-                image_url = request.args['image']
+
+            if 'file' in request.args:
+                image_url = request.args['file']
                 imageNewName = request.args['name']
+                return upload_image_from_url(image_url, imageNewName)
+            else:
+                yt_url = request.args['url']
+                ytdl = YoutubeDL()
+                info = ytdl.extract_info(yt_url, download=False)
+                audio_name = '.'.join([info['title'].replace(' ','_'), 'mp3'])
+                ydl_opts['outtmpl'] =  '/'.join([audio_link, audio_name])
 
-                url_arr = image_url.split('/')
-                if allowed_file(url_arr[len(url_arr) - 1]):
-                    ext_name = url_arr[len(url_arr) - 1].split('.')[1]
+                with YoutubeDL(ydl_opts) as ydl:
+                    ydl.download([yt_url])
 
-                    imageNewName = '.'.join([imageNewName, ext_name])
-                    image_dir = '/'.join([UPLOAD_FOLDER, imageNewName])
+                audio_file = '.'.join([info['title'], 'mp3'])
+                link = '/'.join([request.base_url, ydl_opts['outtmpl']])
+                return jsonify({'link': link})
 
-                    urllib.urlretrieve(image_url, image_dir)
+            return jsonify({'response': message_invalid})
 
-                    link = '/'.join([request.base_url, upload_link, imageNewName])
-
-                    return jsonify({'link': link})
-                else:
-                    return jsonify({'response': message_invalid})
 
     app.register_blueprint(service)

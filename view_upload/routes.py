@@ -21,4 +21,8 @@ def add_routes(app=None):
         return jsonify({'response': staticVariable.UPLOAD_ROOT})
 
 
+    @upload.route('/service/audio/<audioname>')
+    def audio_upload(audioname):
+        return send_from_directory(staticVariable.AUDIO_FOLDER + '/' , audioname)
+
     app.register_blueprint(upload)

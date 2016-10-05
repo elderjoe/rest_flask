@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from flask import Blueprint, jsonify, request
 import staticVariable
+from staticVariable import checkImage
 from youtube_dl import YoutubeDL
 import zipfile
 import urllib
@@ -23,15 +24,30 @@ def add_routes(app=None):
         return '.' in filename and filename.split('.')[1] in ALLOWED_EXTENSIONS
 
     def unzip_file(zipname):
+        zipinfo = zipfile.ZipFile(zipname)
+        CREATED_FOLDER = ''
+        for z in zipinfo.filelist:
+            if not z.filename.endswith('/'):
+                folderName = zipname.filename.split('.')[0]
+                CREATED_FOLDER = '/'.join([UPLOAD_FOLDER, folderName])
+                if not os.path.exists(CREATED_FOLDER):
+                    os.makedirs(CREATED_FOLDER)
+            else: break
+
         with zipfile.ZipFile(UPLOAD_FOLDER + "/" + zipname.filename, 'r') as z:
-            z.extractall(UPLOAD_FOLDER)
+            if CREATED_FOLDER:
+                z.extractall(CREATED_FOLDER)
+            else: z.extractall(UPLOAD_FOLDER)
 
     def list_files(UPLOAD_FOLDER, file):
         file_arr = []
         zipName = file.filename.split('.')[0]
+
         try:
             for fileName in os.listdir(UPLOAD_FOLDER + '/' + zipName):
-                if fileName.split('.')[1] in ALLOWED_EXTENSIONS:
+                print checkImage(UPLOAD_FOLDER, zipName, fileName)
+                if fileName.split('.')[1] in ALLOWED_EXTENSIONS and \
+                    checkImage(UPLOAD_FOLDER, zipName, fileName):
                     file_arr.append(fileName)
                 else:
                     os.remove(UPLOAD_FOLDER + '/' + zipName + '/' + fileName)
@@ -46,6 +62,7 @@ def add_routes(app=None):
 
         if req_file and allowed_file(fileName):
             folder, ext = fileName.split('.')
+            base_url = request.base_url
             if ext == 'zip':
                 req_file.save(os.path.join(UPLOAD_FOLDER, fileName))
                 unzip_file(req_file)
@@ -62,7 +79,7 @@ def add_routes(app=None):
 
             else:
                 req_file.save(os.path.join(UPLOAD_FOLDER, fileName))
-                link = '/'.join([request.base_url, upload_link, fileName])
+                link = '/'.join([base_url, upload_link, fileName])
                 return jsonify({'link': link})
 
         else:
@@ -77,8 +94,8 @@ def add_routes(app=None):
             image_dir = '/'.join([UPLOAD_FOLDER, imageNewName])
 
             urllib.urlretrieve(image_url, image_dir)
-
-            link = '/'.join([request.base_url, upload_link, imageNewName])
+            base_url = request.base_url
+            link = '/'.join([base_url, upload_link, imageNewName])
 
             return jsonify({'link': link})
         else:

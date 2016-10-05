@@ -1,4 +1,5 @@
 import os
+from PIL import Image
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 UPLOAD_FOLDER = os.path.join(BASE_DIR, 'upload')
@@ -34,3 +35,11 @@ def check_upload_directory():
 
     if not os.path.exists(AUDIO_FOLDER):
         os.makedirs(AUDIO_FOLDER)
+
+def checkImage(uploadfolder, folder, filename):
+    try:
+        imageDir = '/'.join([uploadfolder, folder, filename])
+        Image.open(imageDir)
+    except IOError:
+        return False
+    return True

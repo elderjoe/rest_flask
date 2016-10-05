@@ -45,7 +45,6 @@ def add_routes(app=None):
 
         try:
             for fileName in os.listdir(UPLOAD_FOLDER + '/' + zipName):
-                print checkImage(UPLOAD_FOLDER, zipName, fileName)
                 if fileName.split('.')[1] in ALLOWED_EXTENSIONS and \
                     checkImage(UPLOAD_FOLDER, zipName, fileName):
                     file_arr.append(fileName)

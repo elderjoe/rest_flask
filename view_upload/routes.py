@@ -1,4 +1,4 @@
-from flask import Blueprint, send_from_directory, jsonify
+from flask import Blueprint, send_from_directory, jsonify, make_response, send_file
 import staticVariable
 
 
@@ -24,5 +24,12 @@ def add_routes(app=None):
     @upload.route('/service/audio/<audioname>')
     def audio_upload(audioname):
         return send_from_directory(staticVariable.AUDIO_FOLDER + '/' , audioname)
+
+    @upload.route('/download/audio/<audioname>')
+    def download_audio(audioname):
+        response = make_response(send_file(staticVariable.AUDIO_FOLDER + '/' + audioname))
+        response.headers['Content-Type'] = 'audio/mpeg'
+        response.headers['Content-Disposition'] = 'attachment; filename='+audioname
+        return response
 
     app.register_blueprint(upload)

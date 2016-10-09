@@ -1,0 +1,29 @@
+body {
+  background: black;
+}
+
+.custom {
+  margin-top: 20px;
+  padding-top: 20px;
+  border: 1px solid #194f0f;
+  width: 70%;
+  border-radius: 22px;
+  background-color: #1d5b11;
+}
+
+.link-box {
+  margin-top: 10px;
+  border: 1px solid #818c8b;
+  width: 70%;
+  border-radius: 10px;
+  background: #fff;
+}
+
+button {
+  margin-top: 5px;
+  background-color: #c4331d;
+}
+
+input {
+  width: 100%;
+}

@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, render_template, session, redirect, url_for
 import staticVariable
 from staticVariable import checkImage
 from youtube_dl import YoutubeDL
@@ -18,7 +18,10 @@ audio_link = staticVariable.AUDIO_LINK
 ydl_opts = staticVariable.YDL_OPTS
 
 def add_routes(app=None):
-    service = Blueprint('service', __name__)
+    service = Blueprint('service', __name__,
+                        template_folder='templates',
+                        static_folder='./static',
+                        static_url_path='/service/static')
 
     def allowed_file(filename):
         return '.' in filename and filename.split('.')[1] in ALLOWED_EXTENSIONS
@@ -100,6 +103,27 @@ def add_routes(app=None):
         else:
             return jsonify({'response': message_invalid})
 
+    def upload_video(service, name, url):
+        yt_url = url
+        ytdl = YoutubeDL()
+        
+        if name:
+            audio_name = '.'.join([name.replace(' ','_'), 'mp3'])
+        else:
+            info = ytdl.extract_info(yt_url, download=False)
+            audio_name = '.'.join([info['title'].replace(' ','_'), 'mp3'])
+
+        ydl_opts['outtmpl'] =  '/'.join([audio_link, audio_name])
+
+        with YoutubeDL(ydl_opts) as ydl:
+            ydl.download([yt_url])
+
+        link = '/'.join([request.base_url, ydl_opts['outtmpl']])
+        if service == 'API':
+            return jsonify({'link': link})
+        else:
+            return link
+
     @service.route('/service', methods=['GET','POST'])
     def service_index():
 
@@ -120,19 +144,25 @@ def add_routes(app=None):
                 return upload_image_from_url(image_url, imageNewName)
             else:
                 yt_url = request.args['url']
-                ytdl = YoutubeDL()
-                info = ytdl.extract_info(yt_url, download=False)
-                audio_name = '.'.join([info['title'].replace(' ','_'), 'mp3'])
-                ydl_opts['outtmpl'] =  '/'.join([audio_link, audio_name])
-
-                with YoutubeDL(ydl_opts) as ydl:
-                    ydl.download([yt_url])
-
-                audio_file = '.'.join([info['title'], 'mp3'])
-                link = '/'.join([request.base_url, ydl_opts['outtmpl']])
-                return jsonify({'link': link})
+                API = 'API'
+                return upload_video(API, '', yt_url)
 
             return jsonify({'response': message_invalid})
 
+    @service.route('/', methods=['GET','POST'])
+    def service_ui():
+        if request.method == 'POST':
+            url = request.form['url']
+            name = request.form['name']
+            if url:
+                yt_link = upload_video('FORM', name, url)
+                idx = yt_link.find('/audio')
+                yt_link = ''.join([yt_link[:idx],'download',yt_link[idx:]])
+                session['link'] = yt_link
+                return redirect(url_for('service.service_ui'))
+            else:
+                return render_template('index.html', url='URL not found')
+        else:
+            return render_template('index.html', url='')
 
     app.register_blueprint(service)

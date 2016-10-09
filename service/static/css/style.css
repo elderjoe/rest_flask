@@ -1,14 +1,14 @@
 body {
-  background: black;
+  background: #0A0908;
 }
 
 .custom {
   margin-top: 20px;
   padding-top: 20px;
-  border: 1px solid #194f0f;
+  border: 1px solid #5E503F;
   width: 70%;
   border-radius: 22px;
-  background-color: #1d5b11;
+  background-color: #A9927D;
 }
 
 .link-box {
@@ -17,13 +17,15 @@ body {
   width: 70%;
   border-radius: 10px;
   background: #fff;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 button {
   margin-top: 5px;
-  background-color: #c4331d;
+  background-color: #F2F4F3;
 }
 
 input {
   width: 100%;
-}

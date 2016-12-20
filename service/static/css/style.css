@@ -1,5 +1,6 @@
 body {
   background: #0A0908;
+  color: white;
 }
 
 .custom {
@@ -29,9 +30,6 @@ button {
 
 input {
   width: 100%;
-
-#app {
-    text-align: center;
 }
 
 img {
@@ -39,8 +37,4 @@ img {
     margin: auto;
     display: block;
     margin-bottom: 10px;
-  }
-
-button {
-
 }

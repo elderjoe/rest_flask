@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('service.static', filename='css/style.css') }}" charset="utf-8">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.12/vue.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </script>
@@ -24,6 +25,7 @@
         </form>
     </div>
 
+    <hr>
 
     <div class="container">
         <div id="file-list">
@@ -36,13 +38,39 @@
     </div>
 
 
+    <hr>
+    <div class="container">
+        <div class="col-sm-6 col-sm-offset-3">
+            <input type="file" id="input" onchange="reader.readAsDataURL(this.files[0])">
+            <label for="img_len">Length</label><input type="text" name="" value="" id="img_len" style="width:30px">
+            <h1>original</h1>
+            <img id="original">
+            <h1>processed</h1>
+            <canvas id="canvas" hidden></canvas>
+            <canvas id="output"></canvas>
+        </div>
+    </div>
     {% if session %}
     <div class="container link-box">
         <a href="{{ session['link'] }}">{{ session['link'] }}</a>
     </div>
     {% endif %}
 
+    <script src="{{ url_for('service.static', filename='js/grafi.js') }}"></script>
+    <script src="{{ url_for('service.static', filename='js/image_processor.js') }}"></script>
     <script src="{{ url_for('service.static', filename='js/upload_multi.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('input[type=file]').change(function() {
+                var val = $(this).val().toLowerCase();
+                var regex = new RegExp("(.*?)\.(docx|doc|pdf|xml|bmp|ppt|xls|png|jpg|jpeg)$");
+                if (!(regex.test(val))) {
+                    $(this).val('');
+                    alert('Please select correct file format');
+                }
+            });
+        });
+    </script>
 
 </body>
 

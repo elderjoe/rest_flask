@@ -1,28 +1,48 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8">
     <title>Give Me Something</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('service.static', filename='css/style.css') }}" charset="utf-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.12/vue.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  </head>
-  <body>
+    </script>
+</head>
+
+<body>
     <div class="container custom">
-      <form class="form-group" action="{{ url_for('service.service_ui') }}" method="post">
-        <input class="col-md-12" type="text" name="url" value="" placeholder="Input URL">
-        <br>
-        <input class="col-md-12" type="text" name="name" value="" placeholder="Input New Name">
-        <div class="">
-          <button class="btn btn-active" type="submit" name="submit">SUBMIT</button>
-        </div>
-      </form>
+        <form class="form-group" action="{{ url_for('service.service_ui') }}" method="post">
+            <input class="col-md-12" type="text" name="url" value="" placeholder="Input URL">
+            <br>
+            <input class="col-md-12" type="text" name="name" value="" placeholder="Input New Name">
+            <div class="">
+                <button class="btn btn-active" type="submit" name="submit">SUBMIT</button>
+            </div>
+        </form>
     </div>
+
+
+    <div class="container">
+        <div id="file-list">
+            <input type="file" v-model='newFileText'>
+            <button type="button" name="button" @click="addNewFile">Save</button>
+            <ul>
+                <li is="file-item" v-for="(filename, index) in files" v-bind:title="index" v-on:remove="files.splice(index, 1)"></li>
+            </ul>
+        </div>
+    </div>
+
     {% if session %}
-      <div class="container link-box">
+    <div class="container link-box">
         <a href="{{ session['link'] }}">{{ session['link'] }}</a>
-      </div>
+    </div>
     {% endif %}
-  </body>
+
+    <script src="{{ url_for('service.static', filename='js/upload_multi.js') }}"></script>
+
+</body>
+
 </html>

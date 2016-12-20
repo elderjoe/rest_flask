@@ -29,3 +29,18 @@ button {
 
 input {
   width: 100%;
+
+#app {
+    text-align: center;
+}
+
+img {
+    width: 30%;
+    margin: auto;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+button {
+
+}

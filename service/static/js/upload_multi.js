@@ -1,8 +1,14 @@
 Vue.component('file-item', {
 	template: '\
     <li>\
-      {{ title }}\
-      <button v-on:click="$emit(\'remove\')">X</button>\
+			<div class="row">\
+			<div class="col-sm-2">\
+      <button v-on:click="$emit(\'remove\')" class="btn btn-danger">Remove</button>\
+			</div>\
+			<div class="col-sm-9 upload_items">\
+			<p>{{ title }}</p>\
+			</div>\
+			</div>\
     </li>\
   ',
 	props: ['title']

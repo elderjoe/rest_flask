@@ -1,6 +1,9 @@
 body {
   background: #0A0908;
-  color: white;
+}
+
+h1 {
+  color: green;
 }
 
 .custom {
@@ -23,17 +26,43 @@ body {
   text-overflow: ellipsis;
 }
 
+.crop {
+  margin-top: 10px;
+}
+
+.upload_items {
+  margin-top: 13px;
+  margin-left: -25px;
+}
+
+.items {
+  margin-top: 15px;
+}
+
+li {
+  list-style: none;
+  color: white;
+}
+
 button {
   margin-top: 5px;
   background-color: #F2F4F3;
 }
+.rd_btn {
+  position: absolute;
+  margin-left: -45px;
+}
 
-input {
+input[type=file] {
+  width: 100%;
+}
+
+input[type=text] {
   width: 100%;
 }
 
 img {
-    width: 30%;
+    width: 100%;
     margin: auto;
     display: block;
     margin-bottom: 10px;

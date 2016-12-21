@@ -22,7 +22,7 @@ function setUpCanvas() {
 		newWidth = newHeight * wrh;
 	}
 
-	if (cropWidth.value != null && cropHeight.value != null) {
+	if (cropWidth.value != '' && cropHeight.value != '') {
 		newWidth = cropWidth.value
 		newHeight = cropHeight.value
 	}
@@ -40,7 +40,6 @@ function border() {
 		}
 	}
 
-	console.log(value)
 	if (value == 'sharpen') {
 		var newImage = grafi.sharpen(imagedata)
 	} else if (value == 'solarize') {

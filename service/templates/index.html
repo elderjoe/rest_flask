@@ -29,45 +29,46 @@
     </div>
 
     <hr>
+<!--
+<div class="container">
+    <div id="file-list">
+        <div class="input-group">
+            <input type="file" v-model='newFileText'>
+            <button type="button" name="button" @click="addNewFile">Save</button>
+        </div>
 
-    <div class="container">
-        <div id="file-list">
-            <div class="input-group">
-                <input type="file" v-model='newFileText'>
-                <button type="button" name="button" @click="addNewFile">Save</button>
-            </div>
+        <ul class="items">
+            <li is="file-item" v-for="(filename, index) in files" v-bind:title="index" v-on:remove="files.splice(index, 1)"></li>
+        </ul>
+    </div>
+</div>
 
-            <ul class="items">
-                <li is="file-item" v-for="(filename, index) in files" v-bind:title="index" v-on:remove="files.splice(index, 1)"></li>
-            </ul>
+
+<hr>
+<div class="container">
+    <div class="col-sm-6 col-sm-offset-3">
+        <input type="file" id="input" onchange="reader.readAsDataURL(this.files[0])">
+        <label class="radio-inline"><input TYPE="Radio" Name="process" Value="sharpen" class="rd_btn">Sharpen</label>
+        <label class="radio-inline"><input TYPE="Radio" Name="process" Value="solarize" class="rd_btn">Solarize</label>
+        <div class="crop">
+            <p>Crop Image</p>
+            <input type="text" id="cropWidth" placeholder="Width">
+            <input type="text" id="cropHeight" placeholder="Height">
         </div>
     </div>
-
-
-    <hr>
-    <div class="container">
-        <div class="col-sm-6 col-sm-offset-3">
-            <input type="file" id="input" onchange="reader.readAsDataURL(this.files[0])">
-            <label class="radio-inline"><input TYPE="Radio" Name="process" Value="sharpen" class="rd_btn">Sharpen</label>
-            <label class="radio-inline"><input TYPE="Radio" Name="process" Value="solarize" class="rd_btn">Solarize</label>
-            <div class="crop">
-                <p>Crop Image</p>
-                <input type="text" id="cropWidth" placeholder="Width">
-                <input type="text" id="cropHeight" placeholder="Height">
-            </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <h1>Original</h1>
+            <img id="original" class="img-responsive">
         </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <h1>Original</h1>
-                <img id="original" class="img-responsive">
-            </div>
-            <div class="col-sm-6">
-                <h1>Processed</h1>
-                <canvas id="canvas" hidden></canvas>
-                <canvas id="output"></canvas>
-            </div>
+        <div class="col-sm-6">
+            <h1>Processed</h1>
+            <canvas id="canvas" hidden></canvas>
+            <canvas id="output"></canvas>
         </div>
     </div>
+</div>
+-->
 
     {% if session %}
     <div class="container link-box">

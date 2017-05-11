@@ -2,3 +2,4 @@ templates/*.pyc
 view_upload/*.pyc
 *.pyc
 audio/*.mp3
+.vscode

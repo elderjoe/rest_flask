@@ -13,4 +13,4 @@ RUN     git clone https://github.com/elderjoe/rest_flask.git
 RUN     cp -R rest_flask /home \
         && rm -rf rest_flask
 RUN     cp /home/rest_flask/requirements.txt /tmp/ \
-        && pip install requirements.txt
+        && pip install -r requirements.txt

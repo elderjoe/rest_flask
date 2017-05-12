@@ -13,7 +13,10 @@ RUN     pip install --upgrade pip
 RUN     git clone https://github.com/elderjoe/rest_flask.git
 RUN     cp -R rest_flask /home \
         && rm -rf rest_flask
+RUN     cd /home/rest_flask \
+        && git pull \
+        && chmod 777 .
 RUN     cp /home/rest_flask/development.txt /tmp/ \
-        && pip install -r development.txt
+        && pip install -r /tmp/development.txt
 RUN     pip install -U youtube-dl
 EXPOSE  5000

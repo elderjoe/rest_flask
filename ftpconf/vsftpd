@@ -47,6 +47,8 @@ case "${1}" in
 
 		start-stop-daemon --start --background -m --oknodo --pidfile /var/run/vsftpd/vsftpd.pid --exec ${DAEMON}
 		
+		sleep 1
+		
 		n=0
 		while [ ${n} -le 5 ]
 		do 

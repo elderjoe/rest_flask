@@ -19,4 +19,10 @@ RUN     cd /home/rest_flask \
 RUN     cp /home/rest_flask/development.txt /tmp/ \
         && pip install -r /tmp/development.txt
 RUN     pip install -U youtube-dl
+RUN     apt-get install -y vsftpd
+RUN     apt-get install -y ftp
+RUN     apt-get install -y nano
+RUN     cp /home/rest_flask/ftpconf/vsftpd /etc/init.d/vsftpd
+RUN     cp /home/rest_flask/ftpconf/vsftpd.conf /etc/vsftpd
 EXPOSE  5000
+EXPOSE  20

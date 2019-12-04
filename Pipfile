@@ -5,10 +5,10 @@ name = "pypi"
 
 [packages]
 Flask = "==1.0"
-youtube_dl = "==2019.01.02"
+youtube_dl = "==2019.11.28"
 Pillow = "==6.2.0"
 
 [dev-packages]
 
 [requires]
-python_version = "2.7"
+python_version = "3.5.7"
